@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Hello World</title>
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+  <!-- Don't use this in production: -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module">
+    import { useClickAway } from '../hooks/useClickAway.js'
+
+    console.log('[useClickAway]', useClickAway)
+
+    function MyApp() {
+      const [isOpen, setIsOpen] = React.useState(false);
+      const ref = useClickAway(() => {
+        setIsOpen(false);
+      });
+
+      const handleOpenModal = () => {
+        if (isOpen === false) {
+          setIsOpen(true);
+        }
+      };
+
+      console.log('[ref]', ref)
+
+      return React.createElement(React.Fragment, null,
+        React.createElement("section", null,
+          React.createElement("h1", null, "useClickAway"),
+          React.createElement("button", { className: "link", onClick: handleOpenModal }, "Open Modal")),
+        isOpen && (React.createElement("dialog", { ref: ref, open: true },
+          React.createElement("button", { onClick: () => setIsOpen(false) }, '×'),
+          React.createElement("h2", null, "Modal"),
+          React.createElement("p", null, "Click outside the modal to close (or use the button) whatever you prefer."))));
+    }
+    const container = document.getElementById('root');
+    const root = ReactDOM.createRoot(container);
+    root.render(React.createElement(MyApp, null));
+
+  </script>
+  <!-- <script type="text/babel">
+
+
+      function MyApp() {
+        return <h1>Hello, world!</h1>;
+      }
+
+      const container = document.getElementById('root');
+      const root = ReactDOM.createRoot(container);
+      root.render(<MyApp />);
+
+    </script> -->
+  <!--
+      Note: this page is a great way to try React but it's not suitable for production.
+      It slowly compiles JSX with Babel in the browser and uses a large development build of React.
+
+      Read this page for starting a new React project with JSX:
+      https://react.dev/learn/start-a-new-react-project
+
+      Read this page for adding React with JSX to an existing project:
+      https://react.dev/learn/add-react-to-an-existing-project
+    -->
+</body>
+
+</html>
