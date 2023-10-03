@@ -42,89 +42,9 @@ const dispatchStorageEvent = (key, newValue) => {
   window.dispatchEvent(new StorageEvent("storage", { key, newValue }));
 };
 
-export function useBattery() {
-  const [state, setState] = React.useState({
-    supported: true,
-    loading: true,
-    level: null,
-    charging: null,
-    chargingTime: null,
-    dischargingTime: null,
-  });
 
-  React.useEffect(() => {
-    if (!navigator.getBattery) {
-      setState((s) => ({
-        ...s,
-        supported: false,
-        loading: false,
-      }));
-      return;
-    }
 
-    let battery = null;
 
-    const handleChange = () => {
-      setState({
-        supported: true,
-        loading: false,
-        level: battery.level,
-        charging: battery.charging,
-        chargingTime: battery.chargingTime,
-        dischargingTime: battery.dischargingTime,
-      });
-    };
-
-    navigator.getBattery().then((b) => {
-      battery = b;
-      handleChange();
-
-      b.addEventListener("levelchange", handleChange);
-      b.addEventListener("chargingchange", handleChange);
-      b.addEventListener("chargingtimechange", handleChange);
-      b.addEventListener("dischargingtimechange", handleChange);
-    });
-
-    return () => {
-      if (battery) {
-        battery.removeEventListener("levelchange", handleChange);
-        battery.removeEventListener("chargingchange", handleChange);
-        battery.removeEventListener("chargingtimechange", handleChange);
-        battery.removeEventListener("dischargingtimechange", handleChange);
-      }
-    };
-  }, []);
-
-  return state;
-}
-
-export function useClickAway(cb) {
-  const ref = React.useRef(null);
-  const refCb = React.useRef(cb);
-
-  React.useLayoutEffect(() => {
-    refCb.current = cb;
-  });
-
-  React.useEffect(() => {
-    const handler = (e) => {
-      const element = ref.current;
-      if (element && !element.contains(e.target)) {
-        refCb.current(e);
-      }
-    };
-
-    document.addEventListener("mousedown", handler);
-    document.addEventListener("touchstart", handler);
-
-    return () => {
-      document.removeEventListener("mousedown", handler);
-      document.removeEventListener("touchstart", handler);
-    };
-  }, []);
-
-  return ref;
-}
 
 function oldSchoolCopy(text) {
   const tempTextArea = document.createElement("textarea");
